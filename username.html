@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Username | Chatster</title>
+  <link rel="stylesheet" href="username.css" />
+</head>
+<body>
+
+ 
+  <nav class="navbar">
+    <a href="index.html" class="logo">Chatster 💬</a>
+    <div class="nav-right">
+      <a href="login.html" class="nav-link">Login</a>
+      <a href="auth.html" class="nav-link">Sign Up</a>
+    </div>
+  </nav>
+
+  <div class="username-container">
+    <h2>Choose a Cool Username </h2>
+    <input type="text" id="usernameInput" placeholder="Enter your username..." />
+
+    <div class="button-row">
+      <button onclick="generateUsername()" class="btn">🎲 Generate</button>
+      <button onclick="startChat()" class="btn primary"> Start Chatting</button>
+    </div>
+  </div>
+
+ 
+  <script>
+    function generateUsername() {
+      const adjectives = ["Chill", "Witty", "Fast", "Mighty", "Zen", "Sassy"];
+      const animals = ["Lion", "Panda", "Falcon", "Penguin", "Koala", "Panther"];
+      const randomName = `${adjectives[Math.floor(Math.random() * adjectives.length)]}${animals[Math.floor(Math.random() * animals.length)]}${Math.floor(Math.random() * 1000)}`;
+
+      document.getElementById("usernameInput").value = randomName;
+    }
+
+    function startChat() {
+      const username = document.getElementById("usernameInput").value.trim();
+      if (username === "") {
+        alert("Please enter or generate a username!");
+        return;
+      }
+
+      localStorage.setItem("anonUsername", username);
+      window.location.href = "chat.html";
+    }
+  </script>
+
+</body>
+</html>
