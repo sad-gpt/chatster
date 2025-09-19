@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
@@ -11,13 +13,14 @@ const server = http.createServer(app);
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(
-  "mongodb+srv://harshmeetbath15:v9eACFOh7ccPgAae@chatstercluster.ks8wylw.mongodb.net/chatsterDB?retryWrites=true&w=majority&appName=chatstercluster"
-).then(() => {
-  console.log(" Connected to MongoDB Atlas");
-}).catch((err) => {
-  console.error(" MongoDB connection error:", err);
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log(" Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    console.error(" MongoDB connection error:", err);
+  });
+
 
 app.use("/api/auth", authRoutes);
 
@@ -105,7 +108,7 @@ io.on("connection", (socket) => {
           preference: partner.preference
         };
 
-        // Try to match again for partner
+        
         const matchIndex = waitingQueue.findIndex(u =>
           u.socketId !== partner.id &&
           (partnerUserData.preference === null || u.gender === partnerUserData.preference) &&

@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function watchAds() {
-    alert("🎥 Pretending to watch 3 ads...");
+    alert(" Pretending to watch 3 ads...");
     localStorage.setItem("premiumMatches", "3");
     closePopup();
   }
