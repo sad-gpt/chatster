@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Signup - Chatster</title>
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-left">Chatster 💬</a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link">Talk Anonymously</a>
+      <a href="login.html" class="nav-link">Login</a>
+    </div>
+  </nav>
+
+  <div class="auth-container">
+    <h1>Create Account</h1>
+    <form id="signupForm">
+      
+      <select id="gender" required>
+        <option value="" disabled selected>Select your gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+
+      
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const gender = document.getElementById("gender").value;
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      const res = await fetch("http://localhost:5050/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gender, username, email, password, confirmPassword }),
+      });
+
+      const data = await res.json();
+      alert(data.msg);
+    });
+  </script>
+</body>
+</html>

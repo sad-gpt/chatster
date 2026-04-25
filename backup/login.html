@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Chatster</title>
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-left">Chatster </a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link">Talk Anonymously</a>
+      <a href="auth.html" class="nav-link">Sign Up</a>
+    </div>
+  </nav>
+
+  <div class="auth-container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="auth.html">Create one</a></p>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch("http://localhost:5050/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+        alert(data.msg);
+
+        if (res.ok) {
+          
+          localStorage.setItem("user", JSON.stringify(data.user));
+          
+          window.location.href = "chat.html"; 
+        }
+      } catch (err) {
+        console.error("Login failed:", err);
+        alert("Login failed. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.site-title {
+    font-size: 3rem;
+    color: white;
+    text-align: center;
+    margin-top: 30px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(-45deg, #6e8efb, #a777e3, #6e8efb, #a777e3);
+    background-size: 400% 400%;
+    animation: animateBg 15s ease infinite;
+
+    color: white;
+}
+
+
+@keyframes animateBg {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.navbar {
+    width: 100%;
+    padding: 15px 20px;
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+  }
+  
+  .nav-left {
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  
+  .nav-right {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px;
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    white-space: nowrap; 
+  }
+  
+  .nav-link:hover {
+    background: rgba(255,255,255,0.1);
+  }
+  
+ 
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 70px;
+    gap: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 
+                0 0 30px rgba(173, 216, 230, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 340px;
+}
+
+.chat-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(to right, #c471f5, #fa71cd);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .chat-btn:hover {
+    transform: scale(1.05);
+  }
+  
+.who, .am, .i {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+form select {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2); 
+    color: white;
+    font-size: 1rem;
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    backdrop-filter: blur(6px);
+  }
+  
+ 
+  form select option {
+    background-color: #262da9c9; 
+    color: white;
+  }
+  form select {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='10' height='10' viewBox='0 0 10 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 2.5 L5 7.5 L10 2.5' stroke='white' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+  }
+  
+  
+
+select:focus {
+    border-color: #6e8efb;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+
+button {
+    padding: 12px;
+    font-size: 1rem;
+    background: linear-gradient(to right, #6e8efb, #a777e3);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(166, 122, 255, 0.4);
+}
+
