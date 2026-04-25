@@ -1,28 +1,13 @@
-require("dotenv").config();
-
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const { Server } = require("socket.io");
-const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log(" Connected to MongoDB Atlas");
-  })
-  .catch((err) => {
-    console.error(" MongoDB connection error:", err);
-  });
-
-
-app.use("/api/auth", authRoutes);
 
 const io = new Server(server, {
   cors: {
@@ -46,6 +31,9 @@ io.on("connection", (socket) => {
     socket.username = username;
     socket.gender = gender;
     socket.preference = preference;
+    socket.partnerId = null;
+
+    waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
 
     const me = { socketId: socket.id, username, gender, preference };
 
@@ -61,11 +49,6 @@ io.on("connection", (socket) => {
 
       socket.partnerId = match.socketId;
       partnerSocket.partnerId = socket.id;
-
-      
-      partnerSocket.username = match.username;
-      partnerSocket.gender = match.gender;
-      partnerSocket.preference = match.preference;
 
       io.to(match.socketId).emit("matched", { username: socket.username });
       socket.emit("matched", { username: match.username });
@@ -132,6 +115,23 @@ io.on("connection", (socket) => {
 
     updateOnlineCount();
   };
+
+  socket.on("skip", () => {
+    if (socket.partnerId) {
+      const partner = io.sockets.sockets.get(socket.partnerId);
+      if (partner) {
+        partner.emit("receive_message", `${socket.username || "Stranger"} skipped.`);
+        partner.partnerId = null;
+        waitingQueue.push({
+          socketId: partner.id,
+          username: partner.username,
+          gender: partner.gender,
+          preference: partner.preference
+        });
+      }
+      socket.partnerId = null;
+    }
+  });
 
   socket.on("disconnectUser", handleDisconnect);
   socket.on("disconnect", handleDisconnect);
