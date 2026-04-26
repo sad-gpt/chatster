@@ -47,9 +47,9 @@ export default function SafetyBanner() {
       {/* Report modal */}
       {showReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+          <div className="bg-purple-900 border border-pink-500/30 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
             <div className="bg-gradient-to-r from-pink-600 to-purple-700 px-6 py-4">
-              <p className="text-white font-semibold">Report this user</p>
+              <p className="text-pink-50 font-semibold">Report this user</p>
               <p className="text-pink-200 text-xs mt-0.5">
                 Help keep Chatster safe for everyone
               </p>
@@ -95,7 +95,7 @@ export default function SafetyBanner() {
                   <button
                     disabled={!reason}
                     onClick={submit}
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:from-pink-600 hover:to-purple-700 transition"
+                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-pink-50 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:from-pink-600 hover:to-purple-700 transition"
                   >
                     Submit
                   </button>

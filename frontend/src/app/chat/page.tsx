@@ -94,8 +94,8 @@ export default function ChatPage() {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-pink-700 via-fuchsia-800 to-purple-900">
         <div className="text-center">
-          <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white/70 text-sm">Connecting...</p>
+          <div className="w-10 h-10 border-4 border-pink-100/30 border-t-pink-50 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-pink-100/70 text-sm">Connecting...</p>
         </div>
       </div>
     )
@@ -105,13 +105,13 @@ export default function ChatPage() {
   if (status === "waiting") {
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-700 via-fuchsia-800 to-purple-900 gap-4 px-4">
-        <div className="bg-white/10 border border-white/15 rounded-3xl p-10 text-center backdrop-blur-sm shadow-2xl">
-          <div className="w-12 h-12 border-4 border-pink-300/40 border-t-white rounded-full animate-spin mx-auto mb-5" />
-          <p className="text-white font-semibold text-lg">Finding someone for you</p>
+        <div className="bg-pink-100/10 border border-pink-100/15 rounded-3xl p-10 text-center backdrop-blur-sm shadow-2xl">
+          <div className="w-12 h-12 border-4 border-pink-300/40 border-t-pink-50 rounded-full animate-spin mx-auto mb-5" />
+          <p className="text-pink-50 font-semibold text-lg">Finding someone for you</p>
           <p className="text-pink-200 text-sm mt-1 mb-6">This usually takes just a few seconds</p>
           <button
             onClick={() => router.push("/")}
-            className="text-white/50 hover:text-white/80 text-sm transition"
+            className="text-pink-100/50 hover:text-pink-50 text-sm transition"
           >
             Cancel
           </button>
@@ -122,25 +122,25 @@ export default function ChatPage() {
 
   /* ── Chatting ── */
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-pink-50 via-white to-purple-50">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-pink-900 via-fuchsia-950 to-purple-950">
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-pink-100 shadow-sm">
+      <div className="flex items-center gap-3 px-4 py-3 bg-purple-900/40 border-b border-pink-500/20 shadow-sm backdrop-blur-md">
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center shrink-0">
-          <span className="text-white text-sm font-bold">
+          <span className="text-pink-50 text-sm font-bold">
             {partnerName.charAt(0).toUpperCase() || "?"}
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-800 text-sm truncate">{partnerName || "Stranger"}</p>
+          <p className="font-semibold text-pink-100 text-sm truncate">{partnerName || "Stranger"}</p>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-            <p className="text-xs text-gray-400">Connected</p>
+            <p className="text-xs text-pink-400">Connected</p>
           </div>
         </div>
         <button
           onClick={skip}
-          className="px-4 py-1.5 rounded-full bg-pink-50 border border-pink-200 text-pink-600 text-xs font-semibold hover:bg-pink-100 transition"
+          className="px-4 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs font-semibold hover:bg-pink-500 hover:text-pink-50 transition"
         >
           Skip
         </button>
@@ -155,9 +155,9 @@ export default function ChatPage() {
           if (msg.from === "system") {
             return (
               <div key={i} className="flex items-center gap-3 my-2">
-                <span className="flex-1 h-px bg-purple-100" />
-                <p className="text-xs text-purple-400 font-medium shrink-0">{msg.text}</p>
-                <span className="flex-1 h-px bg-purple-100" />
+                <span className="flex-1 h-px bg-pink-500/20" />
+                <p className="text-xs text-pink-400 font-medium shrink-0">{msg.text}</p>
+                <span className="flex-1 h-px bg-pink-500/20" />
               </div>
             )
           }
@@ -169,8 +169,8 @@ export default function ChatPage() {
               <div
                 className={`max-w-[72%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words ${
                   msg.from === "me"
-                    ? "bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-br-sm shadow-md shadow-pink-300/30"
-                    : "bg-white text-gray-800 border border-purple-100 rounded-bl-sm shadow-sm"
+                    ? "bg-gradient-to-br from-pink-500 to-purple-600 text-pink-50 rounded-br-sm shadow-md shadow-pink-900/30"
+                    : "bg-purple-800/40 text-pink-100 border border-pink-500/10 rounded-bl-sm shadow-sm"
                 }`}
               >
                 {msg.text}
@@ -182,7 +182,7 @@ export default function ChatPage() {
         {/* Typing indicator */}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white border border-purple-100 shadow-sm px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-1.5">
+            <div className="bg-purple-800/40 border border-pink-500/10 shadow-sm px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-1.5">
               <span className="typing-dot" />
               <span className="typing-dot" />
               <span className="typing-dot" />
@@ -194,19 +194,19 @@ export default function ChatPage() {
       </div>
 
       {/* Input area */}
-      <div className="px-4 py-3 bg-white border-t border-pink-100">
+      <div className="px-4 py-3 bg-purple-900/40 border-t border-pink-500/20 backdrop-blur-md">
         <div className="flex gap-2 items-center">
           <input
             value={input}
             onChange={e => handleInputChange(e.target.value)}
             onKeyDown={e => e.key === "Enter" && send()}
             placeholder="Say something..."
-            className="flex-1 border border-pink-100 bg-pink-50/30 rounded-full px-5 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 transition"
+            className="flex-1 border border-pink-500/20 bg-pink-100/5 rounded-full px-5 py-2.5 text-sm text-pink-50 placeholder:text-pink-300/30 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
           />
           <button
             onClick={send}
             disabled={!input.trim()}
-            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition shadow-md shadow-pink-300/30"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-pink-50 px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition shadow-md shadow-pink-900/30"
           >
             Send
           </button>

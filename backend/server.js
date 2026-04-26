@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
+const matchmaking = require("./services/matchmaking");
 
 const app = express();
 const server = http.createServer(app);
@@ -17,44 +18,49 @@ const io = new Server(server, {
 });
 
 const PORT = 5050;
-let waitingQueue = [];
 
 function updateOnlineCount() {
   io.emit("updateOnlineCount", io.engine.clientsCount);
+}
+
+async function tryMatch(socket) {
+  const me = {
+    socketId: socket.id,
+    username: socket.username,
+    gender: socket.gender,
+    preference: socket.preference
+  };
+
+  const match = await matchmaking.findMatch(me);
+
+  if (match) {
+    const partnerSocket = io.sockets.sockets.get(match.socketId);
+    if (partnerSocket) {
+      socket.partnerId = match.socketId;
+      partnerSocket.partnerId = socket.id;
+
+      io.to(match.socketId).emit("matched", { username: socket.username });
+      socket.emit("matched", { username: match.username });
+      return true;
+    }
+  }
+  
+  await matchmaking.addUserToQueue(me);
+  return false;
 }
 
 io.on("connection", (socket) => {
   console.log(`Socket connected: ${socket.id}`);
   updateOnlineCount();
 
-  socket.on("match_user", ({ username, gender, preference }) => {
+  socket.on("match_user", async ({ username, gender, preference }) => {
     socket.username = username;
     socket.gender = gender;
     socket.preference = preference;
     socket.partnerId = null;
 
-    waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
-
-    const me = { socketId: socket.id, username, gender, preference };
-
-    const matchIndex = waitingQueue.findIndex(u =>
-      u.socketId !== me.socketId &&
-      (me.preference === null || u.gender === me.preference) &&
-      (u.preference === null || u.preference === me.gender)
-    );
-
-    if (matchIndex !== -1) {
-      const match = waitingQueue.splice(matchIndex, 1)[0];
-      const partnerSocket = io.sockets.sockets.get(match.socketId);
-
-      socket.partnerId = match.socketId;
-      partnerSocket.partnerId = socket.id;
-
-      io.to(match.socketId).emit("matched", { username: socket.username });
-      socket.emit("matched", { username: match.username });
-    } else {
-      waitingQueue.push(me);
-    }
+    await matchmaking.removeUserFromQueue(socket.id);
+    await tryMatch(socket);
   });
 
   socket.on("send_message", (msg) => {
@@ -71,66 +77,36 @@ io.on("connection", (socket) => {
 
   let disconnected = false;
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     if (disconnected) return;
     disconnected = true;
 
     console.log(` Socket disconnected: ${socket.id}`);
-    waitingQueue = waitingQueue.filter(u => u.socketId !== socket.id);
+    await matchmaking.removeUserFromQueue(socket.id);
 
     if (socket.partnerId) {
       const partner = io.sockets.sockets.get(socket.partnerId);
       if (partner) {
         partner.emit("receive_message", ` ${socket.username || "Stranger"} disconnected.`);
         partner.partnerId = null;
-
-        const partnerUserData = {
-          socketId: partner.id,
-          username: partner.username,
-          gender: partner.gender,
-          preference: partner.preference
-        };
-
-        
-        const matchIndex = waitingQueue.findIndex(u =>
-          u.socketId !== partner.id &&
-          (partnerUserData.preference === null || u.gender === partnerUserData.preference) &&
-          (u.preference === null || u.preference === partnerUserData.gender)
-        );
-
-        if (matchIndex !== -1) {
-          const newMatch = waitingQueue.splice(matchIndex, 1)[0];
-          const newSocket = io.sockets.sockets.get(newMatch.socketId);
-
-          partner.partnerId = newMatch.socketId;
-          newSocket.partnerId = partner.id;
-
-          io.to(newMatch.socketId).emit("matched", { username: partnerUserData.username });
-          partner.emit("matched", { username: newMatch.username });
-        } else {
-          waitingQueue.push(partnerUserData);
-        }
+        await tryMatch(partner);
       }
     }
 
     updateOnlineCount();
   };
 
-  socket.on("skip", () => {
+  socket.on("skip", async () => {
     if (socket.partnerId) {
       const partner = io.sockets.sockets.get(socket.partnerId);
       if (partner) {
         partner.emit("receive_message", `${socket.username || "Stranger"} skipped.`);
         partner.partnerId = null;
-        waitingQueue.push({
-          socketId: partner.id,
-          username: partner.username,
-          gender: partner.gender,
-          preference: partner.preference
-        });
+        await tryMatch(partner);
       }
       socket.partnerId = null;
     }
+    await tryMatch(socket);
   });
 
   socket.on("disconnectUser", handleDisconnect);
