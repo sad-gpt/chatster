@@ -1,9 +1,17 @@
+require("dotenv").config();
+
+const mongoose = require("mongoose");
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const matchmaking = require("./services/matchmaking");
+const analytics = require("./services/analytics");
 
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.error("Mongo error:", err));
+  
 const app = express();
 const server = http.createServer(app);
 
@@ -41,6 +49,11 @@ async function tryMatch(socket) {
 
       io.to(match.socketId).emit("matched", { username: socket.username });
       socket.emit("matched", { username: match.username });
+
+      // Start analytics sessions
+      analytics.startSession(socket.id, socket.username, match.username);
+      analytics.startSession(match.socketId, match.username, socket.username);
+
       return true;
     }
   }
@@ -66,6 +79,9 @@ io.on("connection", (socket) => {
   socket.on("send_message", (msg) => {
     if (socket.partnerId) {
       io.to(socket.partnerId).emit("receive_message", msg);
+      // Increment message counts
+      analytics.incrementMessage(socket.id);
+      analytics.incrementMessage(socket.partnerId);
     }
   });
 
@@ -89,8 +105,10 @@ io.on("connection", (socket) => {
       if (partner) {
         partner.emit("receive_message", ` ${socket.username || "Stranger"} disconnected.`);
         partner.partnerId = null;
+        analytics.endSession(socket.partnerId);
         await tryMatch(partner);
       }
+      analytics.endSession(socket.id);
     }
 
     updateOnlineCount();
@@ -102,8 +120,10 @@ io.on("connection", (socket) => {
       if (partner) {
         partner.emit("receive_message", `${socket.username || "Stranger"} skipped.`);
         partner.partnerId = null;
+        analytics.endSession(socket.partnerId);
         await tryMatch(partner);
       }
+      analytics.endSession(socket.id);
       socket.partnerId = null;
     }
     await tryMatch(socket);
