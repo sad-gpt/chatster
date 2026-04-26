@@ -7,6 +7,7 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const matchmaking = require("./services/matchmaking");
 const analytics = require("./services/analytics");
+const authRoutes = require("./routes/auth");
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
@@ -17,6 +18,7 @@ const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 
 const io = new Server(server, {
   cors: {
