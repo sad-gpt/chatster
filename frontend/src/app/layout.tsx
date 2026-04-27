@@ -2,14 +2,18 @@ import "./globals.css"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Chatster — Talk to Strangers",
-  description: "Anonymous real-time chat with strangers around the world. Safe, ephemeral, and fun.",
+  title: "Chatster",
+  description: "Anonymous Chat",
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   )
 }

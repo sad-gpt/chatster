@@ -1,7 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+
+import Image from "next/image"
 
 export default function UsernamePage() {
   const router = useRouter()
@@ -9,17 +11,65 @@ export default function UsernamePage() {
   const [gender, setGender] = useState("any")
   const [preference, setPreference] = useState("any")
 
+  useEffect(() => {
+    // Sync with existing data if available
+    const userStr = localStorage.getItem("user")
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        if (user.username) setUsername(user.username)
+        if (user.gender) setGender(user.gender)
+        if (user.preference) setPreference(user.preference)
+      } catch (e) { /* ignore */ }
+    } else {
+      const sName = sessionStorage.getItem("username")
+      const sGender = sessionStorage.getItem("gender")
+      const sPref = sessionStorage.getItem("preference")
+      if (sName) setUsername(sName)
+      if (sGender) setGender(sGender)
+      if (sPref) setPreference(sPref)
+    }
+  }, [])
+
   function start() {
     const name = username.trim()
     if (!name) return
+
+    // Save for matchmaking
     sessionStorage.setItem("username", name)
     sessionStorage.setItem("gender", gender)
     sessionStorage.setItem("preference", preference)
-    router.push("/chat")
+
+    // Also update localStorage if user is logged in
+    const userStr = localStorage.getItem("user")
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        localStorage.setItem("user", JSON.stringify({
+          ...user,
+          username: name,
+          gender,
+          preference
+        }))
+      } catch (e) { /* ignore */ }
+    }
+
+    router.push("/home")
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-pink-700 via-fuchsia-800 to-purple-900 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gradient-to-br from-pink-800 via-fuchsia-900 to-purple-950 flex items-center justify-center px-4">
+      
+      {/* Logo Top Left (Clean, Large) */}
+      <div className="fixed top-8 left-8">
+        <div 
+          onClick={() => router.push("/home")}
+          className="group cursor-pointer transition-transform hover:scale-105 active:scale-95"
+        >
+          <Image src="/logo.png" alt="Chatster" width={80} height={80} className="rounded-2xl shadow-lg" />
+        </div>
+      </div>
+
       <div className="w-full max-w-sm">
 
         <button
@@ -34,16 +84,17 @@ export default function UsernamePage() {
 
         <div className="bg-pink-50 rounded-3xl overflow-hidden shadow-2xl shadow-purple-900/30">
           <div className="bg-gradient-to-r from-pink-600 to-purple-700 px-8 py-6">
-            <h1 className="text-2xl font-bold text-pink-50">Guest Setup</h1>
+            <h1 className="text-2xl font-bold text-pink-50">Profile Setup</h1>
             <p className="text-pink-200 text-sm mt-1">
-              Pick a name and who you&apos;d like to meet
+              Talk to strangers. Stay anonymous.
             </p>
           </div>
+
 
           <div className="px-8 py-7 space-y-4">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-purple-700 uppercase tracking-wider">
-                Your nickname
+                Nickname
               </label>
               <input
                 type="text"
