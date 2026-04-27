@@ -40,7 +40,7 @@ Chatster is a simple, fast, and anonymous chat platform where you can connect wi
    ```
 
 ### Deployment
-[Live Demo Link Placeholder]
+chatster-sigma.vercel.app
 
 ---
-*Stay safe and respect others in the community.*
+
