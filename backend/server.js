@@ -16,18 +16,21 @@ mongoose.connect(process.env.MONGO_URI)
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
+const PORT = process.env.PORT || 5050;
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "*",
+  methods: ["GET", "POST"]
+}));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: process.env.FRONTEND_URL || "*",
     methods: ["GET", "POST"]
   }
 });
-
-const PORT = 5050;
 
 function updateOnlineCount() {
   io.emit("updateOnlineCount", io.engine.clientsCount);

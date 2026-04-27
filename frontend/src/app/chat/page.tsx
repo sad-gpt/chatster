@@ -50,7 +50,7 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
-    const socket = io("http://localhost:5050")
+    const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050")
     socketRef.current = socket
 
     socket.on("connect", () => {

@@ -22,7 +22,8 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      const res = await fetch("http://localhost:5050/api/auth/signup", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5050"
+      const res = await fetch(`${backendUrl}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password, gender, preference })
